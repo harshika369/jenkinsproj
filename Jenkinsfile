@@ -2,6 +2,7 @@ pipeline {
     agent any
     
     tools {
+        // Confirm these match 'Manage Jenkins' -> 'Tools'
         maven 'maven3' 
         jdk 'jdk17'
     }
@@ -21,16 +22,17 @@ pipeline {
 
         stage('Verify Artifact') {
             steps {
-                archiveArtifacts artifacts: 'target/*.war', followSymlinks: false
+                // This saves the war file so you can see it in the Jenkins UI
+                archiveArtifacts artifacts: 'target/my-webapp.war', followSymlinks: false
             }
         }
 
         stage('Deploy to Tomcat') {
             steps {
-                // This corrected structure uses 'war' and 'adapters'
+                // The contextPath will be the end of your URL (e.g., /my-webapp)
                 deploy adapters: [tomcat9(credentialsId: 'tomcat-creds', path: '', url: 'http://18.205.27.122:9090')], 
-                       contextPath: 'my-web-app', 
-                       war: 'target/*.war'
+                       contextPath: 'my-webapp', 
+                       war: 'target/my-webapp.war'
             }
         }
     }
