@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // This pulls the code you showed in your screenshots
+                // This pulls the code from your repository
                 git branch: 'main', url: 'https://github.com/harshika369/jenkinsproj.git'
             }
         }
@@ -24,8 +24,18 @@ pipeline {
 
         stage('Verify Artifact') {
             steps {
-                // This shows you the result in the Jenkins UI
+                // This saves the result in the Jenkins UI
                 archiveArtifacts artifacts: 'target/*.war', followSymlinks: false
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                // This sends the .war file to Tomcat on port 9090
+                deploy artifacts: 'target/*.war', 
+                       contextPath: 'my-web-app', 
+                       credentialsId: 'tomcat-creds', 
+                       url: 'http://18.205.27.122:9090'
             }
         }
     }
