@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // This pulls the code you showed in your screenshots
-                git 'https://github.com/harshika369/jenkinsproj.git'
+                git branch: 'main', url: 'https://github.com/harshika369/jenkinsproj.git'
             }
         }
 
