@@ -1,12 +1,15 @@
-# Step 1: Use Java 17 (Matching your Ubuntu setup)
-FROM eclipse-temurin:17-jdk-alpine
+# Step 1: Use Tomcat instead of just Java
+FROM tomcat:9.0-jdk17-corretto
 
-# Step 2: Set the working directory
-WORKDIR /app
+# Step 2: Remove the default Tomcat web apps to keep it clean
+RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Step 3: Copy the .war file from the target folder to the container
-# Jenkins Maven build creates this in the 'target' directory
-COPY target/*.war app.war
+# Step 3: Copy your .war file into the Tomcat webapps folder
+# Tomcat will automatically "explode" (unzip) and run this file
+COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
 
-# Step 4: Run the application
-ENTRYPOINT ["java", "-jar", "app.war"]
+# Step 4: Expose the default Tomcat port
+EXPOSE 8080
+
+# Tomcat starts automatically, so we don't need a complex ENTRYPOINT
+CMD ["catalina.sh", "run"]
